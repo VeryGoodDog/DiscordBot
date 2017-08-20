@@ -1,0 +1,22 @@
+{
+  "name": "discordbot",
+  "version": "0.1.0",
+  "description": "Fun times bot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "testbot"
+  },
+  "repository": {
+    "type": "git",
+    "url": "discordbot"
+  },
+  "keywords": [
+    "discord"
+  ],
+  "author": "VeryGoodDog",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "djs-collection-persistent": "^0.1.3"
+  }
+}
