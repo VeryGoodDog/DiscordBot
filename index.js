@@ -1,29 +1,11 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-client.config = require('./config.json');
+client.config = require('./config/config.json');
+client.config.getCommand = require('./config/getCommand.js');
+client.config.requireCommand = require('./config/requireCommand.js')
 
-client.config.getCommand = (client, msg, args, com) => {
-  if (!args) {
-    let preArgs = msg.content.slice(client.config.prefix.length).trim().split(/ +/g);
-    var args = preArgs[0] ? preArgs : null;
-  }
-  if (!com) {
-    var com = require(`./commands/${args.shift().toLowerCase()}.js`);
-  }
-  let arg = args[0];
-  console.log('command: ', com.config.name, '\nargs: ', args, '\narg: ', !!arg);
-  if (com.subCom && com.subCom[arg]) {
-    console.log('subCom');
-    args.shift();
-    client.config.getCommand(client, msg, args, com.subCom[arg]);
-  } else if (com.func) {
-    if(com.config.minArgs === null ? false : (com.config.minArgs > args.length)) return msg.channel.send('you need more args');
-    if(args[0] === undefined) args = null;
-    console.log(args);
-    com.func(client, msg, args);
-  }
-}
+client.commands = client.config.requireCommand(client);
 
 client.on('ready', () => {
   console.log('PEPPER ready!');
@@ -32,8 +14,6 @@ client.on('ready', () => {
 client.on('message', msg => {
   if (msg.author.bot) return;
   if (!msg.content.startsWith(client.config.prefix)) return;
-
-  // console.log('test');
 
   try {
     client.config.getCommand(client, msg);
