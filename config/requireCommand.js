@@ -15,6 +15,7 @@ module.exports = (client, msg, args) => {
       if(v.includes('.')) continue;
       // console.log(`index: ${dir}/${v}`);
       commandObj[v] = {};
+      delete require.cache[require.resolve(`${dir}/${v}/index.js`)];
       commandObj[v] = require(`${dir}/${v}/index.js`);
       commandObj[v].config = require(`${dir}/${v}/config.json`);
 
