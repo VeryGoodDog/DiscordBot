@@ -8,7 +8,7 @@ module.exports = (client, msg, args, com) => {
 
   function getCommand(args, com) {
     let arg = args[0];
-    // console.log('args: ', args, '\narg: ', !!arg);
+    // console.log('com: ', com,'\nargs: ', args, '\narg: ', !!arg);
     if (com.subCom && com.subCom[arg]) {
       // console.log('subCom');
       args.shift();

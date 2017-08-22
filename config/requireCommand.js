@@ -3,35 +3,41 @@ const fs = require('fs');
 module.exports = (client, msg, args) => {
   const comPath = `${client.config.root}/commands`;
 
-  const commands = addFuncAndConfig(comPath);
+  const commands = addFuncAndConfig(comPath, {});
 
   // console.log('commands: ',commands);
 
-  function addFuncAndConfig(dir) {
-    if (typeof commandObj === 'undefined') commandObj = {};
+  function addFuncAndConfig(dir, commandObj) {
+    // console.log('\n');
+    // console.log('commandObj exists: ', !!commandObj);
+    // console.log('commandObj pre fn: ', commandObj);
     dirs = fs.readdirSync(dir);
     // console.log('dir: ',dir);
     for (v of dirs) {
-      if(v.includes('.')) continue;
-      // console.log(`index: ${dir}/${v}`);
+      if (v.includes('.')) continue;
+      let index = `${dir}/${v}`;
+      // console.log('index: ', index);
       commandObj[v] = {};
-      delete require.cache[require.resolve(`${dir}/${v}/index.js`)];
-      commandObj[v] = require(`${dir}/${v}/index.js`);
-      commandObj[v].config = require(`${dir}/${v}/config.json`);
-
-      // console.log(`v: ${v}`);
-      // console.log(`commandObj[v]: `,commandObj[v]);
-
-      subComDir = `${dir}/${v}/subCom`;
-      // console.log(`subComDir: ${dir}/${v}/subCom`);
-      if (fs.existsSync(subComDir)) {
-        // console.log(`commandObj[v]:2 `,commandObj[v]);
-        commandObj[v].subCom = addFuncAndConfig(subComDir);
-        // console.log(`commandObj[v]:3 `,commandObj[v]);
-        // console.log(`commandObj[v].subCom: `,commandObj[v].subCom);
-      }
+      commandObj[v] = getFuncAndConfig(index, commandObj);
     }
-    // console.log(`commandObj: `,commandObj);
+    // console.log('commandObj post fn: ',commandObj);
+    // console.log('\n');
+    return commandObj;
+  }
+
+  function getFuncAndConfig(index, commandObj) {
+    delete require.cache[require.resolve(`${index}/index.js`)];
+    commandObj = require(`${index}/index.js`);
+    commandObj.config = require(`${index}/config.json`);
+    commandObj.help = require(`${index}/help.json`);
+    commandObj.help.usage = commandObj.help.usage.replace('%prefix%', client.config.prefix)
+    // console.log('commandObj: ',commandObj);
+
+    subComDir = `${index}/subCom`;
+    if (fs.existsSync(subComDir)) {
+      commandObj.subCom = {};
+      commandObj.subCom = addFuncAndConfig(subComDir, commandObj.subCom);
+    }
     return commandObj;
   }
 
