@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%config",
+  "description": "this command displays config information",
+  "shortDescription": "config"
+}

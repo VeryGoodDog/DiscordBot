@@ -1,4 +1,5 @@
 {
-  "needsData": false,
-  "minArgs": 2
+  "allowedChannels": "all",
+  "minArgs": 2,
+  "needsCollection": false
 }

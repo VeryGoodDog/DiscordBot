@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%role [role]",
+  "description": "this command toggles roles",
+  "shortDescription": "add roles"
+}
