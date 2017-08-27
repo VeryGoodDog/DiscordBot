@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%help {command<string>}",
+  "description": "this command displays help for any command",
+  "shortDescription": "help"
+}

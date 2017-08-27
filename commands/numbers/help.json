@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%numbers",
+  "description": "this command tells u number thingies",
+  "shortDescription": "Numbers!"
+}

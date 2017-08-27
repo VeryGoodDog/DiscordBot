@@ -1,5 +1,5 @@
 {
   "allowedChannels": null,
-  "minArgs": null,
+  "minArgs": 2,
   "needsCollection": true
 }

@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%config add",
+  "description": "this command adds config information",
+  "shortDescription": "config add"
+}

@@ -30,7 +30,7 @@ module.exports = (client, msg, args) => {
     commandObj = require(`${index}/index.js`);
     commandObj.config = require(`${index}/config.json`);
     commandObj.help = require(`${index}/help.json`);
-    commandObj.help.usage = commandObj.help.usage.replace('%prefix%', client.config.prefix)
+    commandObj.help.usage = commandObj.help.usage.replace('%prefix%',  guildConfig.prefix)
     // console.log('commandObj: ',commandObj);
 
     subComDir = `${index}/subCom`;

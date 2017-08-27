@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%config read [key]",
+  "description": "this command reads a key",
+  "shortDescription": "config read"
+}

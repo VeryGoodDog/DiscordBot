@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%numbers subtract [numOne<number>] [numOne<number>]",
+  "description": "this command subtracts two numbers",
+  "shortDescription": "subtract numbers"
+}

@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%cannedresponse",
+  "description": "this command works with canned responses",
+  "shortDescription": "change canned responses"
+}

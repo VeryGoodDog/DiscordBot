@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%ping",
+  "description": "this command pong",
+  "shortDescription": "ping pong"
+}
