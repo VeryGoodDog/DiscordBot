@@ -23,28 +23,32 @@ class simpleDB extends EventEmitter {
 
   async set(key, val) {
     if (this.state !== 'ready') throw new Error('DB not ready.');
-    if (typeof key !== 'string') return;
-    if (typeof val === 'undefined') return;
-    sql.get(`SELECT * FROM ${this.name} WHERE key ="${key}"`).then(row => {
+    if (typeof key !== 'string') throw new Error('key must be a string.');
+    if (typeof val === 'undefined') throw new Error('val must be defined.');
+    val = JSON.stringify(val).replace(/["]+/g, '\'');
+    let pass = await sql.get(`SELECT * FROM ${this.name} WHERE key ="${key}"`).then(row => {
       if (!row) {
-        sql.run(`INSERT INTO ${this.name} (key, val) VALUES (?, ?)`, [key, val]).then(() => {
+        let set = sql.run(`INSERT INTO ${this.name} (key, val) VALUES (?, ?)`, [key, val])
+        set.then(() => {
           return true;
         });
       } else {
-        sql.run(`UPDATE ${this.name} SET val ="${val}" WHERE key ="${key}"`).then(() => {
+        let set = sql.run(`UPDATE ${this.name} SET val ="${val}" WHERE key ="${key}"`);
+        set.then(() => {
           return true;
         });
       }
     });
+    return pass ? true : false;
   }
 
   async get(key) {
     if (this.state !== 'ready') throw new Error('DB not ready.');
-    if (typeof key !== 'string') throw new Error('key must be a string');
+    if (typeof key !== 'string') throw new Error('key must be a string.');
     let val = await sql.get(`SELECT * FROM ${this.name} WHERE key ="${key}"`).then(row => {
       return row.val;
     });
-    return val;
+    return val.replace(/[']+/g,'"');
   }
 }
 

@@ -17,26 +17,30 @@ options = {
 client.on('ready', () => {
   const guildsDB = new simpleDB(options);
 
-
   guildsDB.on('ready', () => {
-    guildsDB.set('guild','text stuff').then(() => {
-      guildsDB.get('guild').then(val => {
-        console.log('returned ',val);
-        client.guildsDB = guildsDB;
+    const defaults = require('./config/defaults.json');
+    for (v of client.guilds) {
+      guildID = v[0];
+      guildsDB.set(guildID, defaults).then(() => {
+        console.log('PEPPER ready');
       });
-    });
+    }
+    client.guildsDB = guildsDB;
   });
 });
 
 client.on('message', msg => {
-
   if (msg.author.bot) return;
-  if (!msg.content.startsWith(settingsStore.get(msg.guild.id).prefix)) return;
-  try {
-    client.helpers.getCommand(client, msg);
-  } catch (err) {
-    console.error(err);
-  }
+
+  client.guildsDB.get(msg.guild.id).then(val =>{
+    val = JSON.parse(val);
+    if (!msg.content.startsWith(val.prefix)) return;
+    try {
+      client.helpers.getCommand(client, msg);
+    } catch (err) {
+      console.error(err);
+    }
+  });
 });
 
 client.login(client.config.devtoken);
