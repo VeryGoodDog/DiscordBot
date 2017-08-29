@@ -8,6 +8,7 @@ module.exports = (client) => {
   fs.watch(comPath, {recursive: true}, (eventType, filename) => {
     if(eventType !== 'change') return;
     if (filename) {
+      console.log('command saved updating: ',filename);
       client.commands = client.helpers.requireCommand(client);
     }
   });
