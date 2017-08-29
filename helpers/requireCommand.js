@@ -1,9 +1,16 @@
 const fs = require('fs');
 
-module.exports = (client, msg, args) => {
+module.exports = (client) => {
   const comPath = `${client.config.root}/commands`;
 
   const commands = addFuncAndConfig(comPath, {});
+
+  fs.watch(comPath, {recursive: true}, (eventType, filename) => {
+    if(eventType !== 'change') return;
+    if (filename) {
+      client.commands = client.helpers.requireCommand(client);
+    }
+  });
 
   // console.log('commands: ',commands);
 
@@ -30,7 +37,6 @@ module.exports = (client, msg, args) => {
     commandObj = require(`${index}/index.js`);
     commandObj.config = require(`${index}/config.json`);
     commandObj.help = require(`${index}/help.json`);
-    commandObj.help.usage = commandObj.help.usage.replace('%prefix%',  guildConfig.prefix)
     // console.log('commandObj: ',commandObj);
 
     subComDir = `${index}/subCom`;

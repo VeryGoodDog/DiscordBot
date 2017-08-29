@@ -1,19 +1,19 @@
-module.exports = (guildConfig, client, msg, args, com) => {
+module.exports = (client, msg, args, com) => {
   let preArgs = msg.content.slice(guildConfig.prefix.length).trim().split(/ +/g);
   args = preArgs[0] ? preArgs : null;
 
   command = args.shift();
   com = client.commands[command];
 
-  getCommand(guildConfig, args, com);
+  getCommand(args, com);
 
-  function getCommand(guildConfig, args, com) {
+  function getCommand(args, com) {
     let arg = args[0];
     // console.log('com: ', com,'\nargs: ', args, '\narg: ', !!arg);
     if (com.subCom && com.subCom[arg]) {
       // console.log('subCom');
       args.shift();
-      getCommand(guildConfig, args, com.subCom[arg]);
+      getCommand(args, com.subCom[arg]);
     } else if (com.func) {
       // console.log('msg.channel: ', msg.channel);
       // if(channelPerms(guildConfig, client, msg, com)) return;
@@ -25,7 +25,7 @@ module.exports = (guildConfig, client, msg, args, com) => {
     }
   }
 
-  function channelPerms(guildConfig, client, msg, com) {
+  function channelPerms(client, msg, com) {
     if (guildConfig.channels[msg.channel.id] === 'debug') {
       console.log('command run due to debug channel');
       return false;

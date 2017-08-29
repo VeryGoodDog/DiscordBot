@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-
-const PersistentCollection = require('djs-collection-persistent');
+const fs = require('fs');
 
 client.config = require('./config/config.json');
 
@@ -9,37 +8,32 @@ client.helpers = {};
 client.helpers.getCommand = require('./helpers/getCommand.js');
 client.helpers.requireCommand = require('./helpers/requireCommand.js')
 
-client.on("guildCreate", guild => {
-  guildSettings.set(guild.id, require('./config/defaults.json'));
-});
-
-client.on("guildDelete", guild => {
-  guildSettings.delete(guild.id);
-});
-
-const guildSettings = new PersistentCollection({name: 'guildSettings'});
+const simpleDB = require('./helpers/simpleDB.js');
+options = {
+  name: 'guilds',
+  path: `${client.config.root}/data`
+}
 
 client.on('ready', () => {
-  console.log('PEPPER ready!');
-  for (k of client.guilds) {
-    guild = k[1];
-    if (!guildSettings.has(guild.id)) {
-      guildSettings.set(guild.id, require('./config/defaults.json'));
-    }
-    configs = guildSettings.get(guild.id);
-    console.log(configs);
-  }
+  const guildsDB = new simpleDB(options);
+
+
+  guildsDB.on('ready', () => {
+    guildsDB.set('guild','text stuff').then(() => {
+      guildsDB.get('guild').then(val => {
+        console.log('returned ',val);
+        client.guildsDB = guildsDB;
+      });
+    });
+  });
 });
 
 client.on('message', msg => {
+
   if (msg.author.bot) return;
-
-  guildConfig = guildSettings.get(msg.guild.id);
-  if (!msg.content.startsWith(guildConfig.prefix)) return;
-
+  if (!msg.content.startsWith(settingsStore.get(msg.guild.id).prefix)) return;
   try {
-    client.commands = client.helpers.requireCommand(client);
-    client.helpers.getCommand(guildConfig, client, msg);
+    client.helpers.getCommand(client, msg);
   } catch (err) {
     console.error(err);
   }
