@@ -1,5 +1,4 @@
 {
   "allowedChannels": "botChannel",
-  "minArgs": null,
-  "needsCollection": false
+  "minArgs": null
 }

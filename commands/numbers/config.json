@@ -1,5 +1,4 @@
 {
   "allowedChannels": "all",
-  "minArgs": null,
-  "needsCollection": false
+  "minArgs": null
 }
