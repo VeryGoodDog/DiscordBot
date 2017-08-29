@@ -22,6 +22,7 @@ client.on('ready', () => {
     for (v of client.guilds) {
       guildID = v[0];
       guildsDB.set(guildID, defaults).then(() => {
+        client.commands = client.helpers.requireCommand(client);
         console.log('PEPPER ready');
       });
     }
