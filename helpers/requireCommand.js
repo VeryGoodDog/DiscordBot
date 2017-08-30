@@ -9,6 +9,7 @@ module.exports = (client) => {
     if(eventType !== 'change') return;
     if (filename) {
       console.log('command saved updating: ',filename);
+      delete client.commands;
       client.commands = client.helpers.requireCommand(client);
     }
   });
