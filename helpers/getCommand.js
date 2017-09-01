@@ -1,6 +1,5 @@
 module.exports = (client, msg) => {
   client.guildsDB.get(msg.guild.id).then(guildConfig => {
-    guildConfig = JSON.parse(guildConfig);
     let preArgs = msg.content.slice(guildConfig.prefix.length).trim().split(/ +/g);
     args = preArgs[0] ? preArgs : null;
 

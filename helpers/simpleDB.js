@@ -25,7 +25,7 @@ class simpleDB extends EventEmitter {
     if (this.state !== 'ready') throw new Error('DB not ready.');
     if (typeof key !== 'string') throw new Error('key must be a string.');
     if (typeof val === 'undefined') throw new Error('val must be defined.');
-    val = JSON.stringify(val).replace(/["]+/g, '\'');
+    val = JSON.stringify(val).replace(/["]+/g, '\"');
     let pass = await sql.get(`SELECT * FROM ${this.name} WHERE key ="${key}"`).then(row => {
       if (!row) {
         let set = sql.run(`INSERT INTO ${this.name} (key, val) VALUES (?, ?)`, [key, val])
@@ -48,7 +48,13 @@ class simpleDB extends EventEmitter {
     let val = await sql.get(`SELECT * FROM ${this.name} WHERE key ="${key}"`).then(row => {
       return row.val;
     });
-    return val.replace(/[']+/g,'"');
+    val = val.replace(/[\']+/g,'"')
+    let json = JSON.parse(val)
+    if (json) {
+      return json
+    } else {
+      return val
+    }
   }
 }
 
