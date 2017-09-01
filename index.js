@@ -1,47 +1,30 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
-const fs = require('fs');
+const Discord = require('discord.js')
+const client = new Discord.Client()
+const fs = require('fs')
+client.config = require('./config/config.json')
 
-client.config = require('./config/config.json');
+fs.readdir(`${client.config.root}/helpers`,(err, paths) => {
+  if (err) console.error(err)
 
-client.helpers = {};
-client.helpers.getCommand = require('./helpers/getCommand.js');
-client.helpers.requireCommand = require('./helpers/requireCommand.js')
+  client.helpers = {}
+  for (path of paths) {
+    let name = path.split('.')[0]
+    const helper = require(`./helpers/${path}`)
+    client.helpers[name] = helper
+    console.log(`bound ${path} to helper ${name}.`)
+    delete require.cache[require.resolve(`./helpers/${path}`)]
+  }
+})
 
-const simpleDB = require('./helpers/simpleDB.js');
-options = {
-  name: 'guilds',
-  path: `${client.config.root}/data`
-}
+fs.readdir(`${client.config.root}/events`,(err, paths) => {
+  if (err) console.error(err)
 
-client.on('ready', () => {
-  const guildsDB = new simpleDB(options);
-
-  guildsDB.on('ready', () => {
-    const defaults = require('./config/defaults.json');
-    for (v of client.guilds) {
-      guildID = v[0];
-      guildsDB.set(guildID, defaults).then(() => {
-        client.commands = client.helpers.requireCommand(client);
-        console.log('PEPPER ready');
-      });
-    }
-    client.guildsDB = guildsDB;
-  });
-});
-
-client.on('message', msg => {
-  if (msg.author.bot) return;
-
-  client.guildsDB.get(msg.guild.id).then(val =>{
-    val = JSON.parse(val);
-    if (!msg.content.startsWith(val.prefix)) return;
-    try {
-      client.helpers.getCommand(client, msg);
-    } catch (err) {
-      console.error(err);
-    }
-  });
-});
-
-client.login(client.config.devtoken);
+  for (path of paths) {
+    let name = path.split('.')[0]
+    const event = require(`./events/${path}`)
+    client.on(name, event.bind(null, client))
+    console.log(`bound ${path} to event ${name}.`)
+    delete require.cache[require.resolve(`./events/${path}`)]
+  }
+})
+client.login(client.config.devtoken)

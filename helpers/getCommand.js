@@ -1,4 +1,4 @@
-module.exports = (client, msg, args, com) => {
+module.exports = (client, msg) => {
   client.guildsDB.get(msg.guild.id).then(guildConfig => {
     guildConfig = JSON.parse(guildConfig);
     let preArgs = msg.content.slice(guildConfig.prefix.length).trim().split(/ +/g);
@@ -6,6 +6,8 @@ module.exports = (client, msg, args, com) => {
 
     command = args.shift();
     com = client.commands[command];
+
+    // console.log('client.commands: ',client.commands);
 
     getCommand(args, com);
 

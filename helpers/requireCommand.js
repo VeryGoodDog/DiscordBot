@@ -1,25 +1,17 @@
 const fs = require('fs');
 
 module.exports = (client) => {
+  client.commands = {}
+  // console.log(client.commands);
   const comPath = `${client.config.root}/commands`;
 
-  const commands = addFuncAndConfig(comPath, {});
+  const commands = addFuncAndConfig(comPath);
 
-  fs.watch(comPath, {recursive: true}, (eventType, filename) => {
-    if(eventType !== 'change') return;
-    if (filename) {
-      console.log('command saved updating: ',filename);
-      delete client.commands;
-      client.commands = client.helpers.requireCommand(client);
-    }
-  });
-
-  // console.log('commands: ',commands);
-
-  function addFuncAndConfig(dir, commandObj) {
+  function addFuncAndConfig(dir) {
+    let commandObj = {};
     // console.log('\n');
     // console.log('commandObj exists: ', !!commandObj);
-    // console.log('commandObj pre fn: ', commandObj);
+    // console.log('\n\ncommandObj pre fn: ', commandObj);
     dirs = fs.readdirSync(dir);
     // console.log('dir: ',dir);
     for (v of dirs) {
@@ -29,25 +21,26 @@ module.exports = (client) => {
       commandObj[v] = {};
       commandObj[v] = getFuncAndConfig(index, commandObj);
     }
-    // console.log('commandObj post fn: ',commandObj);
+    // console.log('\n\ncommandObj post fn: ',commandObj);
     // console.log('\n');
     return commandObj;
   }
 
-  function getFuncAndConfig(index, commandObj) {
+  function getFuncAndConfig(index) {
     delete require.cache[require.resolve(`${index}/index.js`)];
+    let commandObj = {};
     commandObj = require(`${index}/index.js`);
     commandObj.config = require(`${index}/config.json`);
     commandObj.help = require(`${index}/help.json`);
-    // console.log('commandObj: ',commandObj);
 
     subComDir = `${index}/subCom`;
     if (fs.existsSync(subComDir)) {
       commandObj.subCom = {};
       commandObj.subCom = addFuncAndConfig(subComDir, commandObj.subCom);
     }
+    // console.log('\n\ncommandObj: ',commandObj);
     return commandObj;
   }
-
-  return commands;
+  // console.log(commands);
+  client.commands = commands
 }
