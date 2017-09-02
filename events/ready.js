@@ -15,7 +15,6 @@ module.exports = (client) => {
       let guildID = guild.id
       client.guildsDB.get(guildID).then(guildConfig => {
         if (!guildConfig || guildConfig === {}) {
-          guildID = v[0]
           client.guildsDB.set(guildID, defaults)
         }
       })
