@@ -1,6 +1,7 @@
 module.exports = (client, msg) => {
-  client.guildsDB.get(msg.guild.id).then(guildConfig => {
-    let preArgs = msg.content.slice(guildConfig.prefix.length).trim().split(/ +/g);
+  client.guildsDB.get(msg.guild.id, (err,guildConfig) => {
+    let prefix = guildConfig.prefix
+    let preArgs = msg.content.slice(prefix.length).trim().split(/ +/g);
     args = preArgs[0] ? preArgs : null;
 
     command = args.shift();

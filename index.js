@@ -17,7 +17,7 @@ fs.readdir(`${client.config.root}/helpers`,(err, paths) => {
 })
 
 fs.readdir(`${client.config.root}/events`,(err, paths) => {
-  if (err) console.error(err)
+  if (err) throw new Error(err)
 
   for (path of paths) {
     let name = path.split('.')[0]
@@ -27,4 +27,7 @@ fs.readdir(`${client.config.root}/events`,(err, paths) => {
     delete require.cache[require.resolve(`./events/${path}`)]
   }
 })
-client.login(client.config.devtoken)
+
+setTimeout(() => {
+  client.login(client.config.devtoken)
+},1000)

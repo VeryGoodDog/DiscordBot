@@ -1,0 +1,5 @@
+{
+  "usage": "%prefix%config delete [key<string>]",
+  "description": "this command deletes config information",
+  "shortDescription": "config delete"
+}

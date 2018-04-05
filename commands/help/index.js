@@ -1,5 +1,6 @@
 exports.func = (client, msg, args) => {
-  client.guildsDB.get(msg.guild.id).then(guild => {
+  client.guildsDB.get(msg.guild.id,(err,guild) => {
+    if (err) return console.error(err)
     let commands = client.helpers.clone(client.commands)
 
     if (args) {
